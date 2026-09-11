@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: recipeforge-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-recipeforge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-recipeforge}
+      POSTGRES_DB: ${POSTGRES_DB:-recipeforge}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-recipeforge} -d ${POSTGRES_DB:-recipeforge}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
