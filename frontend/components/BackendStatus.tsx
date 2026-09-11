@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getHealth } from "@/lib/api";
+import { healthApi } from "@/lib/api";
 
 type State = { status: "loading" } | { status: "ok"; db: string } | { status: "error" };
 
@@ -9,7 +9,8 @@ export default function BackendStatus() {
   const [state, setState] = useState<State>({ status: "loading" });
 
   useEffect(() => {
-    getHealth()
+    healthApi
+      .get()
       .then((h) => setState({ status: "ok", db: h.db }))
       .catch(() => setState({ status: "error" }));
   }, []);

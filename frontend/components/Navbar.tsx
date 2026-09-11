@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/lib/auth";
 
 export default function Navbar() {
+  const { user, loading, logout } = useAuth();
   const links = [
     { href: "/", label: "Home" },
     { href: "/explore", label: "Explore" },
@@ -24,15 +28,33 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-3 text-sm">
-          <button className="text-zinc-400 hover:text-zinc-100" disabled>
-            Log in
-          </button>
-          <button
-            className="rounded-md border border-emerald-500/40 px-3 py-1.5 font-medium text-emerald-400 hover:bg-emerald-500/10"
-            disabled
-          >
-            Sign up
-          </button>
+          {loading ? (
+            <span className="text-zinc-500">…</span>
+          ) : user ? (
+            <>
+              <Link href={`/profile/${user.username}`} className="text-zinc-400 hover:text-zinc-100">
+                @{user.username}
+              </Link>
+              <button
+                onClick={() => logout()}
+                className="rounded-md border border-zinc-700 px-3 py-1.5 hover:border-zinc-500 hover:text-zinc-100"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-zinc-400 hover:text-zinc-100">
+                Log in
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-md border border-emerald-500/40 px-3 py-1.5 font-medium text-emerald-400 hover:bg-emerald-500/10"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>
