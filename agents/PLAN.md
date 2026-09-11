@@ -12,12 +12,17 @@
 | Backend | Python 3.12+, FastAPI, Pydantic v2, SQLAlchemy 2.0 (sync), Alembic |
 | Database | PostgreSQL 16 |
 | Infra | Docker Compose (Postgres only — backend/frontend run on host for fast dev) |
-| Auth | JWT (access + refresh tokens), bcrypt password hashing |
+| Auth | JWT single access token (7-day), bcrypt password hashing |
 
 > **Note (Phase 1):** Deviated from the original plan — SQLAlchemy is **sync**
 > with `psycopg` (simpler Alembic + sessions, no perf concern via FastAPI's
 > threadpool), and Compose runs **Postgres only** (quality bar only requires
 > Postgres in Docker; Next/FastAPI hot-reload is more reliable on the host).
+>
+> **Note (Phase 2):** Deviated on token strategy — single 7-day JWT access
+> token stored in `localStorage` instead of access+refresh. Stateless logout
+> (no token blacklist yet). Backend tests run against a separate
+> `recipeforge_test` database.
 
 ## Monorepo Layout
 
@@ -227,12 +232,13 @@ Similar:    GET  /api/recipes/{id}/similar
 - [x] Basic layout (nav, footer, landing page with live backend status)
 
 ### Phase 2 — Authentication
-- [ ] User model + migration
-- [ ] Registration endpoint (bcrypt)
-- [ ] Login endpoint (JWT access + refresh)
-- [ ] Protected route middleware
-- [ ] Auth UI (login/register pages)
-- [ ] User profile endpoint
+- [x] User model + migration
+- [x] Registration endpoint (bcrypt)
+- [x] Login endpoint (JWT single access token)
+- [x] Protected route dependency (`get_current_user`)
+- [x] Auth UI (login/register pages + client auth state)
+- [x] User profile endpoint
+- [x] Backend auth tests (separate `recipeforge_test` DB)
 
 ### Phase 3 — Recipes
 - [ ] Recipe model + migration
