@@ -31,6 +31,13 @@ def _create_test_db() -> None:
 def app_database():
     _create_test_db()
 
+    # drop_all removes tables in Base.metadata but not alembic_version, so a
+    # leftover stamp would make `upgrade` a no-op against an empty schema.
+    engine = create_engine(TEST_DB_URL, isolation_level="AUTOCOMMIT")
+    with engine.connect() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
+    engine.dispose()
+
     from alembic import command
     from alembic.config import Config
 
