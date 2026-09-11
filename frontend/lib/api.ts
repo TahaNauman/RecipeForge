@@ -17,6 +17,75 @@ export type AuthResponse = {
   user: User;
 };
 
+export type IngredientInput = {
+  name: string;
+  quantity?: number | null;
+  unit?: string | null;
+};
+
+export type Ingredient = {
+  name: string;
+  quantity: number | null;
+  unit: string | null;
+};
+
+export type InstructionInput = {
+  text: string;
+};
+
+export type Instruction = {
+  step_number: number;
+  text: string;
+};
+
+export type RecipeVersion = {
+  version_number: string;
+  created_at: string;
+  ingredients: Ingredient[];
+  instructions: Instruction[];
+};
+
+export type Recipe = {
+  id: number;
+  title: string;
+  description: string | null;
+  cuisine: string | null;
+  difficulty: string | null;
+  prep_time: number | null;
+  cook_time: number | null;
+  servings: number | null;
+  created_at: string;
+  updated_at: string;
+  author_username: string;
+  version: RecipeVersion;
+};
+
+export type RecipeListItem = {
+  id: number;
+  title: string;
+  cuisine: string | null;
+  difficulty: string | null;
+  prep_time: number | null;
+  cook_time: number | null;
+  servings: number | null;
+  created_at: string;
+  author_username: string;
+  version_number: string;
+  ingredient_count: number;
+};
+
+export type RecipeInput = {
+  title: string;
+  description?: string | null;
+  cuisine?: string | null;
+  difficulty?: string | null;
+  prep_time?: number | null;
+  cook_time?: number | null;
+  servings?: number | null;
+  ingredients: IngredientInput[];
+  instructions: InstructionInput[];
+};
+
 const API_BASE: string =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
@@ -86,4 +155,14 @@ export const authApi = {
     api<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(payload) }),
   me: () => api<User>("/auth/me"),
   logout: () => api<void>("/auth/logout", { method: "POST" }),
+};
+
+export const recipesApi = {
+  list: () => api<RecipeListItem[]>("/recipes"),
+  get: (id: number | string) => api<Recipe>(`/recipes/${id}`),
+  create: (payload: RecipeInput) =>
+    api<Recipe>("/recipes", { method: "POST", body: JSON.stringify(payload) }),
+  update: (id: number | string, payload: RecipeInput) =>
+    api<Recipe>(`/recipes/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  del: (id: number | string) => api<void>(`/recipes/${id}`, { method: "DELETE" }),
 };

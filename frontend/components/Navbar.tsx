@@ -7,6 +7,7 @@ export default function Navbar() {
   const { user, loading, logout } = useAuth();
   const links = [
     { href: "/", label: "Home" },
+    { href: "/recipes", label: "Recipes" },
     { href: "/explore", label: "Explore" },
     { href: "/analytics", label: "Analytics" },
   ];
