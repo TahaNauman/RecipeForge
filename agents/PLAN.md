@@ -241,11 +241,11 @@ Similar:    GET  /api/recipes/{id}/similar
 - [x] Backend auth tests (separate `recipeforge_test` DB)
 
 ### Phase 3 — Recipes
-- [ ] Recipe model + migration
-- [ ] Recipe CRUD endpoints
-- [ ] Ingredient/instruction models (versioned)
-- [ ] Recipe create/edit/view UI
-- [ ] Recipe listing page
+- [x] Recipe model + migration (versioned schema: recipes + recipe_versions + ingredient/instruction snapshots)
+- [x] Recipe CRUD endpoints (list/create/get/update/delete, author-guarded)
+- [x] Ingredient/instruction models (versioned snapshots, created as v1.0)
+- [x] Recipe create/edit/view UI
+- [x] Recipe listing page
 
 ### Phase 4 — Version Control
 - [ ] RecipeVersion model + migration
