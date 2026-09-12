@@ -26,6 +26,7 @@ class RecipeBase(BaseModel):
 class RecipeCreate(RecipeBase):
     ingredients: list[IngredientInput] = Field(min_length=1)
     instructions: list[InstructionInput] = Field(min_length=1)
+    change_description: str | None = Field(default=None, max_length=200)
 
 
 class RecipeUpdate(BaseModel):
@@ -38,6 +39,7 @@ class RecipeUpdate(BaseModel):
     servings: int | None = Field(default=None, ge=1)
     ingredients: list[IngredientInput] | None = None
     instructions: list[InstructionInput] | None = None
+    change_description: str | None = Field(default=None, max_length=200)
 
 
 class IngredientOut(BaseModel):
@@ -58,10 +60,25 @@ class InstructionOut(BaseModel):
 class RecipeVersionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    id: int
     version_number: str
+    parent_version_id: int | None
+    author_username: str
+    change_description: str | None
     created_at: datetime
     ingredients: list[IngredientOut]
     instructions: list[InstructionOut]
+
+
+class RecipeVersionHeader(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    version_number: str
+    author_username: str
+    change_description: str | None
+    created_at: datetime
+    ingredient_count: int
 
 
 class RecipeOut(BaseModel):

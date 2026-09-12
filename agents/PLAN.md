@@ -248,11 +248,12 @@ Similar:    GET  /api/recipes/{id}/similar
 - [x] Recipe listing page
 
 ### Phase 4 — Version Control
-- [ ] RecipeVersion model + migration
-- [ ] Version creation on publish
-- [ ] Snapshot ingredients + instructions per version
-- [ ] Version history page
-- [ ] Immutability enforcement (no UPDATE/DELETE on versions)
+- [x] RecipeVersion model + migration
+- [x] Version creation on edit: PUT appends v1.x (parent_version_id, optional change_description, no-op edits skipped)
+- [x] Snapshot ingredients + instructions per version
+- [x] Version history page + historical version viewing (`/recipes/[id]/history`, `?v={vid}`)
+- [x] Immutability enforcement (Postgres BEFORE UPDATE trigger blocks content changes; recipe deletion still cascades)
+  - Note: "no DELETE" enforcement omitted — deleting a recipe must remove its history (removed repo analogy)
 
 ### Phase 5 — Forking
 - [ ] Fork endpoint (new recipe from version)
@@ -302,7 +303,7 @@ Similar:    GET  /api/recipes/{id}/similar
 
 ### Testing
 - [ ] Registration, auth, recipe CRUD
-- [ ] Version immutability invariant test
+- [x] Version immutability invariant test
 - [ ] Forking creates independent lineage
 - [ ] Diff correctness
 - [ ] Similarity calculations

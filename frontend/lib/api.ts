@@ -39,10 +39,23 @@ export type Instruction = {
 };
 
 export type RecipeVersion = {
+  id: number;
   version_number: string;
+  parent_version_id: number | null;
+  author_username: string;
+  change_description: string | null;
   created_at: string;
   ingredients: Ingredient[];
   instructions: Instruction[];
+};
+
+export type RecipeVersionHeader = {
+  id: number;
+  version_number: string;
+  author_username: string;
+  change_description: string | null;
+  created_at: string;
+  ingredient_count: number;
 };
 
 export type Recipe = {
@@ -84,6 +97,7 @@ export type RecipeInput = {
   servings?: number | null;
   ingredients: IngredientInput[];
   instructions: InstructionInput[];
+  change_description?: string | null;
 };
 
 const API_BASE: string =
@@ -164,5 +178,8 @@ export const recipesApi = {
     api<Recipe>("/recipes", { method: "POST", body: JSON.stringify(payload) }),
   update: (id: number | string, payload: RecipeInput) =>
     api<Recipe>(`/recipes/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  versions: (id: number | string) => api<RecipeVersionHeader[]>(`/recipes/${id}/versions`),
+  version: (id: number | string, versionId: number) =>
+    api<RecipeVersion>(`/recipes/${id}/versions/${versionId}`),
   del: (id: number | string) => api<void>(`/recipes/${id}`, { method: "DELETE" }),
 };

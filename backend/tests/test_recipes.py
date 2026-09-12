@@ -92,13 +92,14 @@ def test_list_recipes_newest_first(client):
     assert item["author_username"] == "erin"
 
 
-def test_update_recipe_rewrites_snapshot(client):
+def test_edit_creates_new_version(client):
     token = _register(client, "finn")
     recipe_id = _create(client, token, title="Original").json()["id"]
     res = client.put(
         f"/api/recipes/{recipe_id}",
         json={
             "title": "Renamed",
+            "change_description": "beef swap",
             "ingredients": [{"name": "beef", "quantity": 0.5, "unit": "kg"}],
             "instructions": [{"text": "Braise slowly"}],
         },
@@ -108,6 +109,9 @@ def test_update_recipe_rewrites_snapshot(client):
     body = res.json()
     assert body["title"] == "Renamed"
     assert body["cuisine"] == "Pakistani"  # untouched fields survive
+    assert body["version"]["version_number"] == "1.1"
+    assert body["version"]["change_description"] == "beef swap"
+    assert body["version"]["parent_version_id"] is not None
     assert [i["name"] for i in body["version"]["ingredients"]] == ["beef"]
     assert body["version"]["ingredients"][0]["quantity"] == 0.5
     assert body["version"]["instructions"][0]["text"] == "Braise slowly"

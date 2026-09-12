@@ -36,6 +36,7 @@ type FormState = {
   prep_time: string;
   cook_time: string;
   servings: string;
+  change_description: string;
   ingredients: IngredientInput[];
   instructions: InstructionInput[];
 };
@@ -44,10 +45,12 @@ export default function RecipeForm({
   recipe,
   onSubmit,
   submitLabel,
+  showChangeNote = false,
 }: {
   recipe?: Recipe;
   onSubmit: (payload: RecipeInput) => Promise<void>;
   submitLabel: string;
+  showChangeNote?: boolean;
 }) {
   const [form, setForm] = useState<FormState>(() => ({
     title: recipe?.title ?? "",
@@ -57,6 +60,7 @@ export default function RecipeForm({
     prep_time: recipe?.prep_time?.toString() ?? "",
     cook_time: recipe?.cook_time?.toString() ?? "",
     servings: recipe?.servings?.toString() ?? "",
+    change_description: "",
     ingredients: initialRows(recipe).ingredients,
     instructions: initialRows(recipe).instructions,
   }));
@@ -113,6 +117,7 @@ export default function RecipeForm({
         prep_time: form.prep_time ? Number(form.prep_time) : null,
         cook_time: form.cook_time ? Number(form.cook_time) : null,
         servings: form.servings ? Number(form.servings) : null,
+        change_description: form.change_description.trim() || null,
         ingredients,
         instructions: instructions.map((text) => ({ text })),
       });
@@ -206,6 +211,24 @@ export default function RecipeForm({
             />
           </div>
         </div>
+        {showChangeNote && (
+          <div>
+            <label className="mb-1 block text-sm text-zinc-400">
+              What changed?
+            </label>
+            <input
+              className={inputClass}
+              value={form.change_description}
+              onChange={(e) => set("change_description", e.target.value)}
+              placeholder="e.g. doubled the chicken, added garam masala"
+              maxLength={200}
+            />
+            <p className="mt-1 text-xs text-zinc-500">
+              Saves a new version. You can view every past version in the
+              recipe history.
+            </p>
+          </div>
+        )}
       </div>
 
       <fieldset className="flex flex-col gap-3">

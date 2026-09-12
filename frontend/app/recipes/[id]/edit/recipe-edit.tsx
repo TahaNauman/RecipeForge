@@ -6,6 +6,11 @@ import { useEffect, useState } from "react";
 import RecipeForm from "@/components/RecipeForm";
 import { recipesApi, type Recipe } from "@/lib/api";
 
+function nextVersionNumber(v: string): string {
+  const [major, minor = "0"] = v.split(".");
+  return `${major}.${Number(minor) + 1}`;
+}
+
 export default function RecipeEdit() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -41,8 +46,13 @@ export default function RecipeEdit() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Edit recipe</h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Changes overwrite current version{" "}
-          <span className="font-mono text-emerald-400">v{recipe.version.version_number}</span>.
+          Current version{" "}
+          <span className="font-mono text-emerald-400">v{recipe.version.version_number}</span>{" "}
+          — saving creates{" "}
+          <span className="font-mono text-emerald-400">
+            v{nextVersionNumber(recipe.version.version_number)}
+          </span>
+          .
         </p>
       </div>
       <RecipeForm
@@ -51,7 +61,8 @@ export default function RecipeEdit() {
           await recipesApi.update(id, payload);
           router.push(`/recipes/${id}`);
         }}
-        submitLabel="Save changes"
+        submitLabel="Save new version"
+        showChangeNote
       />
     </div>
   );
